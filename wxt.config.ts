@@ -37,6 +37,9 @@ export default defineConfig({
             gecko: {
               id: 'litetrans@example.com',
               strict_min_version: '115.0',
+              // AMO 自 2025-11-03 起要求新扩展声明数据收集范围。
+              // 我们确实一点都不收集，所以是 'none'（该值不能与其他值并列）。
+              data_collection_permissions: { required: ['none'] },
             },
           },
         }

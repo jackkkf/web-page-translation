@@ -41,6 +41,13 @@ export default tseslint.config(
     },
   },
   {
+    // 探活用例的产出就是打印真实译文给人看，console 是它的用途而不是遗留调试
+    files: ['**/*.live.ts'],
+    rules: {
+      'no-console': 'off',
+    },
+  },
+  {
     // 构建配置与脚本跑在 Node 里
     files: ['*.config.{ts,js}', 'scripts/**/*.mjs'],
     languageOptions: {

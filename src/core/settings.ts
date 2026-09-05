@@ -1,5 +1,5 @@
 import { storage } from '#imports';
-import type { EngineId } from '../engines/ids';
+import { isEngineId, type EngineId } from '../engines/ids';
 import { defaultTargetLang } from './languages';
 import type { DisplayMode, LangCode, SourceLang, TranslationStyle } from './types';
 
@@ -43,7 +43,7 @@ function browserUiLanguage(): string | undefined {
 }
 
 export const DEFAULT_SETTINGS: Settings = {
-  engineId: 'microsoft-free',
+  engineId: 'bing-free',
   fallbackEngineId: 'google-free',
   targetLang: defaultTargetLang(browserUiLanguage()),
   sourceLang: 'auto',
@@ -56,9 +56,35 @@ export const DEFAULT_SETTINGS: Settings = {
   cacheTtlHours: 24 * 14,
 };
 
+/** 迁移函数拿到的是旧版本的数据，引擎 ID 可能是已经不存在的取值，所以要放宽类型。 */
+type LegacySettings = Omit<Settings, 'engineId' | 'fallbackEngineId'> & {
+  engineId?: string;
+  fallbackEngineId?: string | null;
+};
+
+/** 已下线引擎 → 替代引擎。 */
+const RETIRED_ENGINES: Record<string, EngineId> = {
+  // 微软在 2026 年 7 月底下线了 Edge 匿名 token 端点，免费微软翻译不再可用
+  'microsoft-free': 'bing-free',
+};
+
+function migrateEngineId(value: string | null | undefined, fallback: EngineId | null): EngineId | null {
+  if (!value) return fallback;
+  const replacement = RETIRED_ENGINES[value];
+  if (replacement) return replacement;
+  return isEngineId(value) ? value : fallback;
+}
+
 export const settingsStorage = storage.defineItem<Settings>('local:settings', {
   fallback: DEFAULT_SETTINGS,
-  version: 1,
+  version: 2,
+  migrations: {
+    2: (settings: LegacySettings): Settings => ({
+      ...settings,
+      engineId: migrateEngineId(settings.engineId, DEFAULT_SETTINGS.engineId) ?? DEFAULT_SETTINGS.engineId,
+      fallbackEngineId: migrateEngineId(settings.fallbackEngineId, DEFAULT_SETTINGS.fallbackEngineId),
+    }),
+  },
 });
 
 export const credentialsStorage = storage.defineItem<EngineCredentials>('local:credentials', {

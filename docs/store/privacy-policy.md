@@ -19,7 +19,7 @@
 当你**主动**点击扩展图标、使用快捷键或右键菜单触发翻译时：
 
 1. 扩展读取当前页面的可见文本
-2. 这些文本被直接发送给**你所选择的翻译服务**（微软、谷歌或百度）
+2. 这些文本被直接发送给**你所选择的翻译服务**（必应、谷歌或百度）
 3. 译文返回后显示在页面上，并可选缓存在你的本机
 
 文本直接从你的浏览器发往翻译服务，不经过我们的任何设施。
@@ -30,7 +30,7 @@
 
 你所选引擎会收到待翻译的文本。这些服务有各自的隐私政策，请自行查阅：
 
-- 微软翻译（Edge 内置服务）：https://privacy.microsoft.com/privacystatement
+- 必应翻译（微软）：https://privacy.microsoft.com/privacystatement
 - 谷歌翻译：https://policies.google.com/privacy
 - 百度翻译：https://www.baidu.com/duty/
 

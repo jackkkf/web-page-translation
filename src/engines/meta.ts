@@ -16,12 +16,11 @@ export interface EngineMeta {
 }
 
 export const ENGINE_META: Record<EngineId, EngineMeta> = {
-  'microsoft-free': {
-    id: 'microsoft-free',
-    name: '微软翻译（免费）',
+  'bing-free': {
+    id: 'bing-free',
+    name: '必应翻译（免费）',
     keyless: true,
-    notes: '走 Edge 浏览器内置的匿名 token，无需密钥，支持真批量，国内外网络都可直连。',
-    docsUrl: 'https://learn.microsoft.com/azure/ai-services/translator/language-support',
+    notes: '无需密钥，国内外网络都可直连，支持多段合并请求。走必应网页版接口，非官方 API。',
   },
   'google-free': {
     id: 'google-free',
@@ -33,7 +32,7 @@ export const ENGINE_META: Record<EngineId, EngineMeta> = {
     id: 'baidu',
     name: '百度翻译',
     keyless: false,
-    notes: '需自备 APPID/密钥。标准版不限字符量但 QPS=1；高级版需实名认证，每月 200 万字符免费。',
+    notes: '需自备 APPID/密钥，是三者中唯一有官方文档与 SLA 的选项。标准版不限字符量但 QPS=1。',
     docsUrl: 'https://api.fanyi.baidu.com/doc/21',
   },
 };

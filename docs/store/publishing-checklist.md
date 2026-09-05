@@ -5,7 +5,8 @@
 ## 0. 提交前自检（三商店通用）
 
 ```bash
-npm run verify        # format + lint + compile + test + build:all
+npm run verify        # format + lint + compile + test + build:all + check:manifest
+npm run test:live     # 确认三个翻译接口现在都还活着（免费端点会不打招呼地下线）
 npm run zip:all       # 产出三份可提交的 zip
 ```
 
@@ -28,7 +29,7 @@ npm run zip:all       # 产出三份可提交的 zip
 ### 商店信息
 
 - **名称**：轻译 LiteTrans - 网页双语对照翻译（≤ 75 字符）
-- **简短说明**（≤ 132 字符）：免费开源的网页双语对照翻译扩展。支持微软/谷歌/百度多引擎切换，默认不索取任何网站访问权限。
+- **简短说明**（≤ 132 字符）：免费开源的网页双语对照翻译扩展。支持必应/谷歌/百度多引擎切换，默认不索取任何网站访问权限。
 - **类别**：工具（Tools）
 - **截图**：1280×800 或 640×400，至少 1 张，建议 5 张
   1. 英文技术文档的双语对照效果

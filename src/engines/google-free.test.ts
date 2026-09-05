@@ -21,6 +21,8 @@ describe('google-free 引擎', () => {
     expect(result.detectedFrom).toBe('en');
     expect(fake.calls[0]?.url).toContain('dj=1');
     expect(fake.calls[0]?.url).toContain('tl=zh-CN');
+    // translate.googleapis.com 下的该路径已下线，必须用 translate.google.com
+    expect(fake.calls[0]?.url).toMatch(/^https:\/\/translate\.google\.com\/translate_a\/single/);
   });
 
   it('希伯来语映射到谷歌的历史代码 iw', async () => {
@@ -33,6 +35,7 @@ describe('google-free 引擎', () => {
   });
 
   it('声明的批量上限是 1，传多条时拒绝而不是静默丢弃', async () => {
+    // 无批量能力的引擎必须显式拒绝，否则编排层会以为剩下的段落翻好了
     const engine = createGoogleFreeEngine();
     expect(engine.limits.maxTextsPerRequest).toBe(1);
 

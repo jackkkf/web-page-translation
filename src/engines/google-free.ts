@@ -5,7 +5,8 @@ import { requestJson } from './http';
 import { ENGINE_META } from './meta';
 import type { TranslationEngine } from './types';
 
-const ENDPOINT = 'https://translate.googleapis.com/translate_a/single';
+// 注意不是 translate.googleapis.com —— 那个域名下的该路径已返回 404
+const ENDPOINT = 'https://translate.google.com/translate_a/single';
 const ENGINE_ID = 'google-free' as const;
 
 /** 谷歌沿用了几个历史代码（希伯来语 iw、爪哇语 jw）。 */
@@ -30,7 +31,7 @@ interface GoogleResponse {
  * 已知限制：
  * - 一次只能翻一段（无批量），所以 maxTextsPerRequest = 1
  * - 走 GET，URL 长度受限，字符预算保守设置
- * - 中国大陆网络通常不可直连，因此默认引擎用微软，这里作为降级/备选
+ * - 中国大陆网络通常不可直连，因此默认引擎用必应，这里作为降级/备选
  */
 export function createGoogleFreeEngine(): TranslationEngine {
   const meta = ENGINE_META[ENGINE_ID];

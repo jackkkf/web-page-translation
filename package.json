@@ -26,6 +26,7 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:live": "vitest run --config vitest.live.config.ts",
     "check:manifest": "node scripts/check-manifest.mjs",
     "verify": "npm run format:check && npm run lint && npm run compile && npm run test && npm run build:all && npm run check:manifest",
     "postinstall": "wxt prepare"

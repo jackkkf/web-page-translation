@@ -17,9 +17,8 @@ const ALLOWED_PERMISSIONS = new Set(['storage', 'activeTab', 'scripting', 'conte
 
 /** 允许出现在 host 权限里的域名，必须与 src/engines/ids.ts 保持一致。 */
 const ALLOWED_HOSTS = new Set([
-  'https://edge.microsoft.com/*',
-  'https://api-edge.cognitive.microsofttranslator.com/*',
-  'https://translate.googleapis.com/*',
+  'https://www.bing.com/*',
+  'https://translate.google.com/*',
   'https://fanyi-api.baidu.com/*',
 ]);
 

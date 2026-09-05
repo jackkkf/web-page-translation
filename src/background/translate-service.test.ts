@@ -45,9 +45,9 @@ function createService(
   engines: Partial<EngineRegistry>,
   now?: () => number,
 ): { service: TranslateService; cache: TranslationCache } {
-  const fallback = stubEngine('microsoft-free').engine;
+  const fallback = stubEngine('bing-free').engine;
   const registry = {
-    'microsoft-free': fallback,
+    'bing-free': fallback,
     'google-free': fallback,
     baidu: fallback,
     ...engines,
@@ -93,42 +93,42 @@ describe('TranslateService', () => {
   });
 
   it('按引擎的批量上限切分请求', async () => {
-    const primary = stubEngine('microsoft-free', { limits: { maxTextsPerRequest: 2 } });
+    const primary = stubEngine('bing-free', { limits: { maxTextsPerRequest: 2 } });
     const { service } = createService(
-      { engineId: 'microsoft-free', fallbackEngineId: null, cacheEnabled: false },
-      { 'microsoft-free': primary.engine },
+      { engineId: 'bing-free', fallbackEngineId: null, cacheEnabled: false },
+      { 'bing-free': primary.engine },
     );
 
     const response = await service.translateBatch({ texts: ['a', 'b', 'c'], from: 'auto', to: 'zh-CN' });
 
     expect(primary.calls.map((call) => call.texts)).toEqual([['a', 'b'], ['c']]);
     expect(response.items).toEqual([
-      { ok: true, text: '[microsoft-free]a', cached: false },
-      { ok: true, text: '[microsoft-free]b', cached: false },
-      { ok: true, text: '[microsoft-free]c', cached: false },
+      { ok: true, text: '[bing-free]a', cached: false },
+      { ok: true, text: '[bing-free]b', cached: false },
+      { ok: true, text: '[bing-free]c', cached: false },
     ]);
   });
 
   it('命中缓存的文本不再请求引擎', async () => {
-    const primary = stubEngine('microsoft-free');
+    const primary = stubEngine('bing-free');
     const { service } = createService(
-      { engineId: 'microsoft-free', fallbackEngineId: null, cacheEnabled: true },
-      { 'microsoft-free': primary.engine },
+      { engineId: 'bing-free', fallbackEngineId: null, cacheEnabled: true },
+      { 'bing-free': primary.engine },
     );
 
     await service.translateBatch({ texts: ['a'], from: 'auto', to: 'zh-CN' });
     const second = await service.translateBatch({ texts: ['a', 'b'], from: 'auto', to: 'zh-CN' });
 
-    expect(second.items[0]).toEqual({ ok: true, text: '[microsoft-free]a', cached: true });
+    expect(second.items[0]).toEqual({ ok: true, text: '[bing-free]a', cached: true });
     expect(primary.calls.map((call) => call.texts)).toEqual([['a'], ['b']]);
   });
 
   it('切换引擎后不会读到上一个引擎的缓存', async () => {
-    const primary = stubEngine('microsoft-free');
+    const primary = stubEngine('bing-free');
     const other = stubEngine('google-free');
     const { service } = createService(
-      { engineId: 'microsoft-free', fallbackEngineId: null, cacheEnabled: true },
-      { 'microsoft-free': primary.engine, 'google-free': other.engine },
+      { engineId: 'bing-free', fallbackEngineId: null, cacheEnabled: true },
+      { 'bing-free': primary.engine, 'google-free': other.engine },
     );
 
     await service.translateBatch({ texts: ['a'], from: 'auto', to: 'zh-CN' });
@@ -138,15 +138,15 @@ describe('TranslateService', () => {
   });
 
   it('主引擎失败时降级到备用引擎', async () => {
-    const failing = stubEngine('microsoft-free', {
+    const failing = stubEngine('bing-free', {
       handler: async () => {
         throw new TranslationError('AUTH', 'token 失效');
       },
     });
     const backup = stubEngine('google-free');
     const { service } = createService(
-      { engineId: 'microsoft-free', fallbackEngineId: 'google-free', cacheEnabled: false },
-      { 'microsoft-free': failing.engine, 'google-free': backup.engine },
+      { engineId: 'bing-free', fallbackEngineId: 'google-free', cacheEnabled: false },
+      { 'bing-free': failing.engine, 'google-free': backup.engine },
     );
 
     const response = await service.translateBatch({ texts: ['a'], from: 'auto', to: 'zh-CN' });
@@ -158,7 +158,7 @@ describe('TranslateService', () => {
   it('可重试的错误会退避后重试，最多 3 次尝试', async () => {
     vi.useFakeTimers();
     let attempts = 0;
-    const flaky = stubEngine('microsoft-free', {
+    const flaky = stubEngine('bing-free', {
       handler: async (input) => {
         attempts += 1;
         if (attempts < 3) throw new TranslationError('NETWORK', '网络抖动');
@@ -166,8 +166,8 @@ describe('TranslateService', () => {
       },
     });
     const { service } = createService(
-      { engineId: 'microsoft-free', fallbackEngineId: null, cacheEnabled: false },
-      { 'microsoft-free': flaky.engine },
+      { engineId: 'bing-free', fallbackEngineId: null, cacheEnabled: false },
+      { 'bing-free': flaky.engine },
     );
 
     const promise = service.translateBatch({ texts: ['a'], from: 'auto', to: 'zh-CN' });
@@ -181,15 +181,15 @@ describe('TranslateService', () => {
 
   it('不可重试的错误不做重试', async () => {
     let attempts = 0;
-    const failing = stubEngine('microsoft-free', {
+    const failing = stubEngine('bing-free', {
       handler: async () => {
         attempts += 1;
         throw new TranslationError('MISSING_CREDENTIALS', '缺少密钥');
       },
     });
     const { service } = createService(
-      { engineId: 'microsoft-free', fallbackEngineId: null, cacheEnabled: false },
-      { 'microsoft-free': failing.engine },
+      { engineId: 'bing-free', fallbackEngineId: null, cacheEnabled: false },
+      { 'bing-free': failing.engine },
     );
 
     const response = await service.translateBatch({ texts: ['a'], from: 'auto', to: 'zh-CN' });
@@ -213,15 +213,15 @@ describe('TranslateService', () => {
 
   it('连续失败达到阈值后短路主引擎，直接走降级', async () => {
     let clock = 0;
-    const failing = stubEngine('microsoft-free', {
+    const failing = stubEngine('bing-free', {
       handler: async () => {
         throw new TranslationError('AUTH', '不可用');
       },
     });
     const backup = stubEngine('google-free');
     const { service } = createService(
-      { engineId: 'microsoft-free', fallbackEngineId: 'google-free', cacheEnabled: false },
-      { 'microsoft-free': failing.engine, 'google-free': backup.engine },
+      { engineId: 'bing-free', fallbackEngineId: 'google-free', cacheEnabled: false },
+      { 'bing-free': failing.engine, 'google-free': backup.engine },
       () => clock,
     );
 

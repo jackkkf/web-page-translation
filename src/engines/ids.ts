@@ -5,7 +5,7 @@
  * 而不必把整个引擎实现（含 md5 等依赖）拖进构建配置。
  */
 
-export const ENGINE_IDS = ['microsoft-free', 'google-free', 'baidu'] as const;
+export const ENGINE_IDS = ['bing-free', 'google-free', 'baidu'] as const;
 
 export type EngineId = (typeof ENGINE_IDS)[number];
 
@@ -15,11 +15,12 @@ export function isEngineId(value: unknown): value is EngineId {
 
 /**
  * 扩展只需要访问这几个翻译接口域名。
- * 刻意不申请 `<all_urls>` 的 host_permissions —— 网页访问权限走 activeTab / 可选权限。
+ * 刻意不申请全站 host_permissions —— 网页访问权限走 activeTab / 可选权限。
+ *
+ * 改动这个清单时必须同步 `scripts/check-manifest.mjs` 的白名单，否则权限守卫会失败。
  */
 export const ENGINE_HOST_PERMISSIONS: readonly string[] = [
-  'https://edge.microsoft.com/*',
-  'https://api-edge.cognitive.microsofttranslator.com/*',
-  'https://translate.googleapis.com/*',
+  'https://www.bing.com/*',
+  'https://translate.google.com/*',
   'https://fanyi-api.baidu.com/*',
 ];

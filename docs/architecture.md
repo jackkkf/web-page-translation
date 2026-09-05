@@ -52,7 +52,7 @@ src/
     meta.ts                   展示用元数据（UI 只导入这个，不拖进实现）
     types.ts                  TranslationEngine 接口与限流约束
     http.ts                   统一请求封装：超时、状态码 → 错误码
-    microsoft-free.ts / google-free.ts / baidu.ts
+    bing-free.ts / google-free.ts / baidu.ts
     registry.ts               引擎注册表
   background/
     translate-service.ts      编排：缓存 → 分批 → 限流 → 重试 → 降级 → 熔断

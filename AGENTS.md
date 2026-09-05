@@ -10,8 +10,9 @@ npm run dev            # Chrome 开发模式；dev:firefox / dev:edge 同理
 npm run compile        # tsc --noEmit
 npm run lint           # eslint .
 npm run test           # vitest run
+npm run test:live      # 打真实翻译接口探活（需联网，不进 CI）
 npm run build:all      # 产出 chrome-mv3 / firefox-mv2 / edge-mv3
-npm run verify         # 提交前必须跑通：format + lint + compile + test + build:all
+npm run verify         # 提交前必须跑通：format + lint + compile + test + build:all + check:manifest
 ```
 
 ## 结构
@@ -52,6 +53,7 @@ npm run verify         # 提交前必须跑通：format + lint + compile + test 
 
 - 纯逻辑（引擎、编排、DOM 遍历、渲染、限流、规则匹配）必须有单测，测试与源码同目录，命名 `*.test.ts`。
 - 引擎测试用 `src/testing/fake-fetch.ts` 注入假 fetch，**不要发真实网络请求**。
+- 但假 fetch 有个盲区：**端点被下线了单测照样全绿**（已经发生过一次）。因此改引擎必须另外跑 `npm run test:live`，它打真实接口，用例写在 `src/engines/*.live.ts`。
 - DOM 相关测试跑在 jsdom 下，用真实 DOM 断言，不要 mock DOM。
 - 修 bug 时先写能复现的测试，再改实现。
 
