@@ -1,0 +1,44 @@
+---
+description: 翻译引擎适配层的实现规范
+globs: src/engines/**/*.ts
+alwaysApply: false
+---
+
+# 引擎适配层规范
+
+引擎的职责边界很窄：**一次请求怎么发、响应怎么解析**。仅此而已。
+
+## 不要在引擎里做的事
+
+缓存、分批、限流、重试、降级、熔断，全部在 `src/background/translate-service.ts`。引擎里重复实现会导致双重重试、双重限流。
+
+引擎通过 `limits` **声明**自己的约束，由编排层执行：
+
+```ts
+limits: {
+  maxTextsPerRequest: 25,   // 不支持批量的引擎填 1
+  maxCharsPerRequest: 5000,
+  concurrency: 3,
+  minIntervalMs: 0,         // 有 QPS 限制的引擎必须填（百度标准版 QPS=1 → 1100）
+}
+```
+
+## 必须做的事
+
+1. **请求走 `./http.ts` 的 `requestJson` / `requestText`**，统一超时与状态码映射。不要直接调 `ctx.fetchImpl`。
+2. **用 `ctx.fetchImpl` 而不是全局 `fetch`**，否则无法单测。
+3. **校验返回条数 == 请求条数**，不一致抛 `BAD_RESPONSE`。译文错位比翻译失败更糟糕，用户会得到看似正常但完全对不上的内容。
+4. **语言代码映射表写在引擎文件里**，内部统一用 BCP-47 风格（`zh-CN` / `zh-TW`），各引擎自己转（微软要 `zh-Hans`，百度要 `zh`，谷歌希伯来语要 `iw`）。
+5. **把厂商错误码映射成 `TranslationErrorCode`**，让编排层知道该不该重试、该不该降级。
+6. **需要密钥的引擎在 `hasCredentials` 里校验**，缺失时不发请求。
+7. **元数据（name / notes / docsUrl）从 `./meta.ts` 读**，不要在实现里硬编码 —— UI 只导入 `meta.ts`，避免把实现代码打进 popup bundle。
+
+## 新增引擎的完整清单
+
+- [ ] `ids.ts`：加 `EngineId`，加所需域名到 `ENGINE_HOST_PERMISSIONS`
+- [ ] `scripts/check-manifest.mjs`：同步 `ALLOWED_HOSTS` 白名单（否则权限守卫会失败）
+- [ ] `meta.ts`：加元数据
+- [ ] `<name>.ts`：实现 `TranslationEngine`
+- [ ] `registry.ts`：注册
+- [ ] `<name>.test.ts`：至少覆盖正常批量、条数不匹配、错误码映射、缺密钥
+- [ ] `docs/research/translation-engines.md`：补充接入说明与已知限制

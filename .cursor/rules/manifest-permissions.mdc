@@ -1,0 +1,42 @@
+---
+description: manifest 与权限相关改动的红线
+globs: wxt.config.ts,entrypoints/**,src/background/**
+alwaysApply: false
+---
+
+# 权限红线
+
+最小权限不是洁癖，是产品卖点和商店审查策略。完整理由见 `docs/decisions/0002-permission-model.md`。
+
+## 不允许
+
+- 在 manifest 里加 `content_scripts`
+- 把 `<all_urls>` / `*://*/*` 写进 `host_permissions`（只能放 `optional_host_permissions`）
+- 给内容脚本 entrypoint 写 `matches` —— 即使配了 `registration: 'runtime'`，WXT 也会把 `matches` 自动加进 `host_permissions`
+- 新增 `permissions` 而不更新 ADR-0002、商店权限说明和 `scripts/check-manifest.mjs`
+- 在 background 之外发起翻译接口请求
+
+`npm run check:manifest` 会读构建产物直接拦住以上大部分情况。改不动源码绕过它 —— 它检查的是构建结果。
+
+## 新增网络请求目标时
+
+1. 域名加进 `src/engines/ids.ts` 的 `ENGINE_HOST_PERMISSIONS`
+2. 同步 `scripts/check-manifest.mjs` 的 `ALLOWED_HOSTS`
+3. 更新 `docs/decisions/0002-permission-model.md` 的商店权限说明
+4. 更新 `docs/store/publishing-checklist.md`
+
+## MV2 / MV3 差异
+
+用 `import.meta.env.MANIFEST_VERSION` 判断，分支只允许出现在 `src/background/injector.ts` 与 `src/background/auto-translate.ts`。
+
+| 能力         | MV3                                | MV2                       |
+| ------------ | ---------------------------------- | ------------------------- |
+| 按需注入     | `scripting.executeScript`          | `tabs.executeScript`      |
+| 动态注册     | `scripting.registerContentScripts` | `contentScripts.register` |
+| 可选全站权限 | `optional_host_permissions`        | `optional_permissions`    |
+
+## background 是 MV3 service worker
+
+- 消息监听器必须在 `defineBackground` 回调里**同步**注册，不能放在 `await` 之后
+- 任何内存态（缓存、token）都要能从 storage 重建
+- 不要假设 background 一直活着

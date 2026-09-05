@@ -1,0 +1,32 @@
+---
+description: 内容脚本与 DOM 操作规范
+globs: src/content/**/*.ts,entrypoints/translate.content.ts
+alwaysApply: false
+---
+
+# 内容脚本规范
+
+内容脚本运行在**别人的页面**上，任何假设都可能不成立。
+
+## 硬性要求
+
+1. **不能直接 `fetch` 翻译接口。** 受 CORS 限制，且不该接触密钥。一律 `sendMessage('translateBatch', ...)`。
+2. **初始化必须幂等。** 脚本可能被重复注入（`entrypoints/translate.content.ts` 的 `INJECTED_FLAG`、`injectContentStyle` 的 id 检查）。
+3. **还原必须彻底。** 用户点「显示原文」后，DOM 的文本内容必须与翻译前完全一致。所有插入节点带 `data-litetrans`，「仅显示译文」模式改写的文本节点原值要存下来。
+4. **插入的节点用 `<span>`，靠 class 控制 `display`。** 在 `<p>` 里插 `<div>` 是非法嵌套，会影响站点 CSS。
+5. **定时器用 `ctx.setTimeout` 而不是全局 `setTimeout`**，扩展更新/卸载后能自动停掉。返回类型是 `number`，不是 `NodeJS.Timeout`。
+6. **样式用 `styles.ts` 里的字符串内联注入**，不要 `import './style.css'` —— 内容脚本是动态注入的，manifest 的 css 数组不会生效。
+
+## DOM 遍历的坑（都有单测覆盖，改之前先看 dom-walker.test.ts）
+
+- **纯空白文本节点不能丢**：它是词间分隔，丢了会把 `<b>brave</b> <i>world</i>` 粘成 `braveworld`
+- **标点、数字节点不能在遍历阶段丢**：`<p>Hello <b>world</b>!</p>` 的 `!` 属于这句话。是否值得翻译要按**整段**判断，不是按节点
+- **拼接时不要补空格**：文本节点自带的空白就是用户看到的间距
+- **必须跳过自己插入的节点**（`data-litetrans`），否则会翻译译文
+- **必须尊重** `translate="no"`、`.notranslate`、`aria-hidden="true"`、`contenteditable`
+- **跳过判断要检查所有祖先**，不只是直接父元素
+- 段落单元有 1200 字符上限，超出在文本节点边界拆开
+
+## 性能
+
+页面可能有上万个文本节点。遍历只做一次，靠 `IntersectionObserver` 决定何时翻译，靠 `seen: WeakSet<Text>` 保证节点不被重复处理。不要写"每次滚动都全量重扫 DOM"的逻辑。

@@ -1,0 +1,154 @@
+.options {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+
+.options h1 {
+  margin: 0 0 4px;
+  font-size: 22px;
+}
+
+.options__subtitle {
+  margin: 0 0 28px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.card {
+  margin-bottom: 20px;
+  padding: 18px 20px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.card h2 {
+  margin: 0 0 4px;
+  font-size: 15px;
+}
+
+.card__desc {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.field > span {
+  flex: 0 0 120px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.field input,
+.field select {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 9px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 13px;
+}
+
+.field--checkbox {
+  align-items: flex-start;
+}
+
+.field--checkbox input {
+  flex: 0 0 auto;
+  margin-top: 3px;
+}
+
+.field--checkbox > div {
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.field--checkbox small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.engine-note {
+  margin: -4px 0 14px 132px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.rules {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.rule {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rule code {
+  flex: 1;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--surface-strong);
+  font-size: 12px;
+}
+
+.button {
+  padding: 7px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-strong);
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.button--primary {
+  border-color: transparent;
+  background: var(--accent);
+  color: #fff;
+}
+
+.button--danger {
+  color: #c0392b;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.status {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.status--error {
+  color: #c0392b;
+}
+
+.options a {
+  color: var(--accent);
+}

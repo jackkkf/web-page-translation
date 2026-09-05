@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: 格式检查
+        run: npm run format:check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: 类型检查
+        run: npm run compile
+
+      - name: 单元测试
+        run: npm run test
+
+      - name: 构建三浏览器产物
+        run: npm run build:all
+
+      # 读构建产物的 manifest 断言最小权限，是无法靠改源码绕过的红线
+      - name: 权限守卫
+        run: npm run check:manifest
+
+      - name: Firefox 产物校验
+        run: npx web-ext lint --source-dir .output/firefox-mv2 --warnings-as-errors=false
+
+      - name: 上传产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: extension-builds
+          path: .output/*/
+          retention-days: 7
+
+  docs-drift:
+    # AGENTS.md 里的命令、路径、依赖版本容易与代码脱节，
+    # 关键文件变动时提醒 review，而不是硬失败
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: 检查是否需要同步文档
+        run: |
+          BASE="origin/${{ github.base_ref }}"
+          CHANGED=$(git diff --name-only "$BASE"...HEAD)
+
+          needs_docs=0
+          echo "$CHANGED" | grep -qE '^(package\.json|wxt\.config\.ts)$' && needs_docs=1
+          echo "$CHANGED" | grep -qE '^src/engines/' && needs_docs=1
+          echo "$CHANGED" | grep -qE '^src/core/settings\.ts$' && needs_docs=1
+
+          if [ "$needs_docs" = "1" ] && ! echo "$CHANGED" | grep -qE '^(docs/|AGENTS\.md)'; then
+            echo "::warning::改动了命令/引擎/存储结构，但没有更新 docs/ 或 AGENTS.md，请确认文档是否需要同步"
+          else
+            echo "文档同步检查通过"
+          fi
