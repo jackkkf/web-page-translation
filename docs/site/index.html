@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>轻译 LiteTrans</title>
+    <style>
+      :root {
+        --text: #1f2328;
+        --muted: #6b7280;
+        --accent: #0f766e;
+        --border: #e2e4e8;
+      }
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        color: var(--text);
+        line-height: 1.7;
+      }
+      main {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 56px 20px 80px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+      }
+      .brand h1 {
+        margin: 0;
+        font-size: 32px;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      a {
+        color: var(--accent);
+      }
+      ul {
+        padding-left: 1.2em;
+      }
+      .links {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-top: 28px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="brand">
+        <img src="./icon.png" alt="" />
+        <h1>轻译 LiteTrans</h1>
+      </div>
+      <p>开源、免费、默认不索取任何网站访问权限的网页双语对照翻译扩展。</p>
+      <ul>
+        <li>译文插在原文下方，原文始终可核对</li>
+        <li>必应 / 谷歌 / 百度多引擎，失败自动降级</li>
+        <li>安装时不会出现「读取所有网站数据」提示</li>
+        <li>没有服务器、没有埋点</li>
+      </ul>
+      <p class="links">
+        <a href="https://github.com/jackkkf/web-page-translation">源代码</a>
+        <a href="./privacy.html">隐私政策</a>
+        <a href="https://github.com/jackkkf/web-page-translation/issues">问题反馈</a>
+      </p>
+      <p class="muted">Chrome / Edge / Firefox。商店链接上架后补在这里。</p>
+    </main>
+  </body>
+</html>

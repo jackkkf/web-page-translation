@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>隐私政策 · 轻译 LiteTrans</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --text: #1f2328;
+        --muted: #6b7280;
+        --accent: #0f766e;
+        --border: #e2e4e8;
+        --bg: #fff;
+      }
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        color: var(--text);
+        background: var(--bg);
+        line-height: 1.7;
+      }
+      header,
+      main,
+      footer {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 24px 20px;
+      }
+      header {
+        padding-top: 40px;
+      }
+      a {
+        color: var(--accent);
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 28px;
+      }
+      h2 {
+        font-size: 18px;
+        margin: 32px 0 8px;
+      }
+      p,
+      li {
+        color: var(--text);
+      }
+      .muted {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 8px 10px;
+        border: 1px solid var(--border);
+        font-size: 14px;
+      }
+      th {
+        background: #f6f8fa;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <p class="muted"><a href="./index.html">轻译 LiteTrans</a></p>
+      <h1>隐私政策</h1>
+      <p class="muted">最后更新：2026-09-06</p>
+    </header>
+    <main>
+      <h2>简短版</h2>
+      <p>轻译不收集、不存储、不传输你的任何个人数据。我们没有服务器。</p>
+
+      <h2>我们不做什么</h2>
+      <ul>
+        <li>不运营任何服务器，因此不可能收集你的数据</li>
+        <li>不收集浏览历史、页面内容、个人信息</li>
+        <li>不使用任何统计、埋点、遥测、崩溃上报服务</li>
+        <li>不使用 Cookie 或任何跨站追踪技术</li>
+        <li>不出售、不共享、不转移任何数据给第三方</li>
+      </ul>
+
+      <h2>数据如何流动</h2>
+      <p>当你主动点击扩展图标、使用快捷键或右键菜单触发翻译时：</p>
+      <ol>
+        <li>扩展读取当前页面的可见文本</li>
+        <li>这些文本被直接发送给你所选择的翻译服务（必应、谷歌或百度）</li>
+        <li>译文返回后显示在页面上，并可选缓存在你的本机</li>
+      </ol>
+      <p>
+        文本直接从你的浏览器发往翻译服务，不经过我们的任何设施。未触发翻译时，扩展不在任何网页上运行，也不读取任何内容。
+      </p>
+
+      <h2>第三方翻译服务</h2>
+      <p>你所选引擎会收到待翻译的文本。这些服务有各自的隐私政策：</p>
+      <ul>
+        <li>必应翻译（微软）：<a href="https://privacy.microsoft.com/privacystatement">privacy.microsoft.com</a></li>
+        <li>谷歌翻译：<a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
+        <li>百度翻译：<a href="https://www.baidu.com/duty/">baidu.com/duty</a></li>
+      </ul>
+      <p>建议：不要翻译含有密码、身份证号、银行卡号等敏感信息的页面。</p>
+
+      <h2>本机存储的数据</h2>
+      <p>以下数据只保存在你的浏览器本机（storage.local），从不上传：</p>
+      <table>
+        <thead>
+          <tr>
+            <th>数据</th>
+            <th>用途</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>偏好设置</td>
+            <td>引擎、语言、译文样式、站点规则</td>
+          </tr>
+          <tr>
+            <td>翻译缓存</td>
+            <td>避免重复请求，可在选项页清空</td>
+          </tr>
+          <tr>
+            <td>百度密钥</td>
+            <td>调用百度翻译 API（若你填写了）</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        密钥刻意保存在 storage.local 而非 storage.sync，因此不会同步到你的浏览器账号或云端。卸载扩展会删除全部本机数据。
+      </p>
+
+      <h2>权限说明</h2>
+      <p>
+        扩展默认不申请任何网站的访问权限；仅当你主动开启「自动翻译」时才会请求，关闭时会主动撤回。详见仓库中的
+        <a href="https://github.com/jackkkf/web-page-translation/blob/main/docs/decisions/0002-permission-model.md"
+          >权限模型说明</a
+        >。
+      </p>
+
+      <h2>开源可验证</h2>
+      <p>
+        本扩展全部代码开源。以上所有声明都可以逐行核对。仓库：
+        <a href="https://github.com/jackkkf/web-page-translation">github.com/jackkkf/web-page-translation</a>
+      </p>
+
+      <h2>联系方式</h2>
+      <p>问题与反馈请提交 <a href="https://github.com/jackkkf/web-page-translation/issues">GitHub Issue</a>。</p>
+    </main>
+    <footer class="muted">MIT License · 轻译 LiteTrans</footer>
+  </body>
+</html>
